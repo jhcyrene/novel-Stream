@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/library.css') }}">
+    <style>
+        /* CSS for the JS-generated pagination */
+        .pagination-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding-bottom: 40px;
+        }
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            color: #4b0082;
+            transition: 0.3s;
+        }
+        .page-btn.active {
+            background: #4b0082;
+            color: white;
+            border-color: #4b0082;
+        }
+        .page-btn:hover:not(.active) {
+            background: #f3e5f5;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}StoryStream - Library{% endblock %}
+
+{% block content %}
+    <div class="library-container">
+        <div class="library-controls">
+            <h1>Browse Novels</h1>
+            <div class="library-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="ongoing">Ongoing</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+                <button class="filter-btn" data-filter="on-hold">On Hold</button>
+                <button class="filter-btn" data-filter="dropped">Dropped</button>
+            </div>
+        </div>
+
+        <div id="novelGrid" class="novel-grid">
+            {% if novels %}
+                {% for novel in novels %}
+                <a href="{{ url_for('main.novel', novel_id=novel.id) }}" class="novel-card-link" data-status="{{ novel.status }}">
+                    <div class="novel-card">
+                        <div class="novel-cover">
+                            {% if novel.cover_path %}
+                                <img src="{{ url_for('static', filename=novel.cover_path) }}" alt="{{ novel.title }}">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/kid-reading.png') }}" alt="Default Cover">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="novel-info">
+                            <h3 class="novel-title">{{ novel.title }}</h3>
+                            <p class="novel-author">By: {{ novel.author }}</p>
+                            
+                            <div class="novel-status">
+                                <span class="status-tag {{ novel.status }}">
+                                    {{ novel.status.replace('-', ' ') | capitalize if novel.status else 'Unknown' }}
+                                </span>
+                                <span class="read-progress">Ch. {{ novel.progress_chapter if novel.progress_chapter else 0 }} Read</span>
+                            </div>
+                            
+                            <span class="btn-read-now">Read Now →</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-library">
+                    <h3>No Novels Found</h3>
+                    <p>Start exploring our collection!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="paginationWrapper" class="pagination-container"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemsPerPage = 12; // Adjust this number to show more/less per page
+            let currentPage = 1;
+            
+            const grid = document.getElementById('novelGrid');
+            const allCards = Array.from(grid.getElementsByClassName('novel-card-link'));
+            const paginationWrapper = document.getElementById('paginationWrapper');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            function displayPage(page, items) {
+                currentPage = page;
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+
+                // Hide all items first
+                allCards.forEach(card => card.style.display = 'none');
+
+                // Show only items for current page
+                items.slice(start, end).forEach(card => {
+                    card.style.display = 'block';
+                });
+
+                setupPagination(items);
+            }
+
+            function setupPagination(items) {
+                paginationWrapper.innerHTML = "";
+                const pageCount = Math.ceil(items.length / itemsPerPage);
+
+                if (pageCount <= 1) return;
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const btn = document.createElement('button');
+                    btn.innerText = i;
+                    btn.classList.add('page-btn');
+                    if (currentPage === i) btn.classList.add('active');
+
+                    btn.addEventListener('click', function() {
+                        displayPage(i, items);
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    });
+                    paginationWrapper.appendChild(btn);
+                }
+            }
+
+            // Filtering Logic
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    const filteredItems = allCards.filter(card => {
+                        const status = card.getAttribute('data-status');
+                        return filter === 'all' || status === filter;
+                    });
+
+                    displayPage(1, filteredItems);
+                });
+            });
+
+            // Initial Load
+            displayPage(1, allCards);
+        });
+    </script>
+{% endblock %}

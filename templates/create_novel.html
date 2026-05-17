@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - Create New Novel{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/author_studio.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="studio-container">
+        <h1 class="heading-primary">
+        {% if is_editing %}
+            📝 Edit Novel: {{ novel.title }}
+        {% else %}
+            📚 Create New Novel
+        {% endif %}
+    </h1>
+    <p class="studio-description">
+        {% if is_editing %}
+            Update the core information and cover image for your novel.
+        {% else %}
+            Start your literary journey! Fill out the details below to create your novel shell.
+        {% endif %}
+    </p>
+
+    <form method="POST" enctype="multipart/form-data" class="novel-form">
+        {{ form.hidden_tag() }}
+
+        <div class="form-grid">
+            <div class="form-column metadata-column">
+                
+                <div class="form-group">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-input", placeholder="e.g., Starforged: The Ember's Call") }}
+                    {% for error in form.title.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.genre.label(class="form-label") }}
+                    {{ form.genre(class="form-select") }}
+                    {% for error in form.genre.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.status.label(class="form-label") }}
+                    {{ form.status(class="form-select") }}
+                    {% for error in form.status.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group file-upload-group">
+                    {{ form.cover_image.label(class="form-label") }}
+                    <div class="file-input-wrapper">
+                        {{ form.cover_image(class="file-input", id="cover-file-input", onchange="updateFileName(this)") }}
+                        
+                        <span class="file-custom-button" onclick="document.getElementById('cover-file-input').click()">Choose File</span> 
+                        
+                        <span id="file-name-display" class="file-name-display">
+                            {% if is_editing and novel.cover_image %}
+                                Current File: {{ novel.cover_image }}
+                            {% else %}
+                                No file selected
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-column description-column">
+                <div class="form-group">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-textarea", rows="15", placeholder="Write a compelling synopsis for your novel...") }}
+                    {% for error in form.description.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                    <p class="help-text">This description will appear on your novel's landing page.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            {{ form.submit(class="btn-primary studio-btn", value=("Update Novel" if is_editing else "Create Novel")) }}
+            <a href="{{ url_for('main.author_dashboard') }}" class="btn-secondary studio-btn cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Script to display the name of the selected file next to the input
+    function updateFileName(input) {
+        const fileNameDisplay = document.getElementById('file-name-display');
+        
+        if (input.files && input.files.length > 0) {
+            // Display the newly selected file's name
+            fileNameDisplay.textContent = 'Selected: ' + input.files[0].name;
+        } else {
+            // Restore the initial/current file name text if selection is cancelled/cleared
+            const initialText = 
+                ("{% if is_editing and novel.cover_image %}" +
+                 "Current File: {{ novel.cover_image }}" +
+                 "{% else %}" +
+                 "No file selected" +
+                 "{% endif %}");
+            fileNameDisplay.textContent = initialText.trim();
+        }
+    }
+</script>
+{% endblock %}

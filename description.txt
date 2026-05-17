@@ -1,0 +1,81 @@
+StoryStream Application – Setup & Explanation
+
+Part 1: Setting up the Project
+
+Step 1: Create a directory Create your main project folder (e.g., StoryStream).
+
+Step 2: Create a Virtual Environment using bash or terminal
+
+  python -m venv venv
+
+Step 3: Activate Virtual Environment
+
+  Windows: venv\Scripts\activate
+  Mac/Linux: source venv/bin/activate
+
+Step 4: Install Requirements (see the Requirements or requireCmd for Requirements ) 
+  example 
+    pip install flask flask_sqlalchemy flask_wtf werkzeug
+
+Part 2: Project Explanation
+
+1. What is this app?
+StoryStream is a platform for authors and readers:
+
+Authors: Can create novels, upload covers, and write/edit chapters using a Rich Text Editor (Quill.js).
+Readers: Can browse novels, track reading progress via bookmarks, and read chapters.
+Technologies: Flask (Web), SQLAlchemy (Database/ORM), WTForms (Validation), Quill.js (Writing tool), and Jinja2 (Templates).
+
+2. Python Backend – main.py
+  a. Routes – How the pages work
+
+    Profile Page: Fetches the logged-in user's details and a list of their specific novels.
+
+    Author Studio: A dashboard for authors to manage their creative work.
+
+    Chapter Creation: Uses a "suggested chapter number" logic by finding the max(chapter_number) and adding 1.
+
+  b. Key Logic: login_required Decorator We use a custom wrapper to ensure certain pages (like the Studio) can only be seen if a user_id is in the session.
+
+3. Models – models.py
+  We use SQLAlchemy (ORM) to act as a translator between Python and the database.
+
+    User Table: Stores credentials and profile icons.
+    Novel Table: Stores title, genre, and status (ongoing, completed, draft).
+    Chapter Table: Holds the content and a chapter_number to keep the story in order.
+    Bookmark Table: Remembers the last_read_chapter_id for every user/novel pair.
+
+4. Forms – forms.py
+
+  WTForms handles our data entry:
+  NovelForm: Includes a FileField for cover images and a SelectField for genres.
+  ChapterForm: Includes an IntegerField for ordering and a TextAreaField for the story content.
+  Validation: Uses DataRequired() and NumberRange(min=1) to ensure data integrity.
+
+5. Templates – Dynamic HTML
+
+  Jinja2 is used to make the pages smart:
+  Status Badges: class="status-{{ novel.status|lower }}" allows us to color-code "Ongoing" vs "Completed" automatically.
+  Quill.js Integration: The create_chapter.html uses a <div> for the editor and a hidden WTForm field to store the HTML content before saving.
+
+6. Sessions & Bookmarking
+The app uses the Session to identify the user. When a user reads a chapter, the app checks if a Bookmark exists; if not, it creates one to save their place.
+
+7. Security & UX
+  CSRF Protection: Handled via form.hidden_tag().
+  Flash Messages: Provides feedback, such as "Chapter saved successfully!".
+  Novalidate: Used on forms with hidden fields to prevent browser "Not Focusable" errors.
+
+Part 3: Advanced Query Filter
+   Logic for filtering counts to exclude drafts for public view:
+
+  # This subquery counts published chapters only for novels that are NOT drafts
+  
+  total_chapters_subquery = db.session.query(
+      Chapter.novel_id, 
+      func.count(Chapter.id).label('total_chapters_count')
+  ).join(Novel, Chapter.novel_id == Novel.id) \
+  .filter(
+      Chapter.is_published == True,
+      Novel.status.in_(['ongoing', 'completed']) 
+  ).group_by(Chapter.novel_id).subquery()

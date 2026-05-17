@@ -1,0 +1,307 @@
+/* ==========================================================================
+   1. GLOBAL VARIABLES & RESET
+   ========================================================================== */
+:root {
+    --primary-color: #4b0082;
+    --accent-color: #9932cc;
+    --secondary-color: #bca0ca;
+    --background-color: #efe9f1;
+    --text-color: #333;
+    --header-color: #ffffff;
+    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: var(--header-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    z-index: 3000;
+}
+
+.top-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 75px;
+    padding: 10px clamp(15px, 5vw, 110px);
+}
+
+.logo {
+    font-size: clamp(20px, 3vw, 24px);
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* ================= NAV LINKS ================= */
+.main-links {
+    display: flex;
+    gap: 25px;
+}
+
+.main-links a {
+    color: var(--text-color);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 0;
+    position: relative;
+}
+
+.main-links a.active {
+    color: var(--primary-color);
+}
+
+.main-links a.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 2px;
+}
+
+/* ================= SEARCH ================= */
+.nav-end {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-profile {
+    display: flex;
+    align-items: center;
+    background: var(--background-color);
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: 1px solid #ddd;
+}
+
+.search-input {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 5px;
+    width: clamp(100px, 15vw, 200px);
+}
+
+/* ================= PROFILE DROPDOWN ================= */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    min-width: 220px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 0;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 6000;
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-header {
+    padding: 10px 20px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.dropdown-item:hover {
+    background: var(--background-color);
+    color: var(--primary-color);
+}
+
+.dropdown-item.logout {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 8px 0;
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.nav-overlay.active {
+    display: block;
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   4. CONTENT (UNCHANGED)
+   ========================================================================== */
+.library-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ==========================================================================
+   5. RESPONSIVE FIXES
+   ========================================================================== */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .main-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        padding: 100px 30px;
+        transition: right 0.4s ease;
+        z-index: 5000;
+    }
+
+    .main-links.active {
+        right: 0;
+    }
+
+    /* MOBILE DROPDOWN */
+    .profile-dropdown {
+        position: static;
+    }
+
+    .dropdown-menu {
+        position: fixed;
+        top: 80px;
+        left: 15px;
+        right: 15px;
+        max-width: 360px;
+        margin: auto;
+        border-radius: 14px;
+    }
+}
+
+/* ================= FLASH MESSAGES ================= */
+.flash-messages-container {
+    position: fixed;
+    top: 90px; /* Sits just below the 75px header */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.flash-message {
+    padding: 15px 20px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.4s ease forwards;
+    border-left: 5px solid var(--primary-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Category Colors */
+.flash-success { border-left-color: #2ecc71; color: #27ae60; }
+.flash-error, .flash-danger { border-left-color: #e74c3c; color: #c0392b; }
+.flash-info { border-left-color: #3498db; color: #2980b9; }
+.flash-warning { border-left-color: #f1c40f; color: #f39c12; }
+
+.flash-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0 0 15px;
+    transition: color 0.2s;
+}
+
+.flash-close-btn:hover {
+    color: var(--text-color);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Adjustment */
+@media (max-width: 480px) {
+    .flash-messages-container {
+        top: 80px;
+        width: 95%;
+    }
+}

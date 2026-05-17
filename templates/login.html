@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - Login{% endblock %}
+
+{% block head %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth-styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+    <div class="form-error-message">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+
+                    {% if category == 'success' %}
+                        <script>
+                            const homeUrl = "{{ url_for('main.home') }}"; 
+                            const delayTime = 1000;
+
+                            setTimeout(() => {
+                                window.location.href = homeUrl;
+                            }, delayTime);
+                        </script>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+  <div class="auth-container">
+    <h1 class="auth-title">Welcome Back</h1>
+    <p class="auth-subtitle">Log in to continue to your account.</p>
+
+    <form class="auth-form" method="POST">
+        
+        {{ form.hidden_tag() }} 
+        
+      <div class="input-group">
+          {{ form.email.label }}
+        
+          {% set email_class = 'input-group-input' %}
+          {% if form.email.errors %}
+              {% set email_class = email_class + ' is-invalid' %}
+          {% endif %}
+          
+          {{ form.email(class_=email_class, placeholder='you@example.com', id='login-email') }}
+          
+          {% for error in form.email.errors %}
+              <span class="form-error-message">{{ error }}</span>
+          {% endfor %}
+      </div>
+
+      <div class="input-group">
+          {{ form.password.label }}
+        
+          {% set password_class = 'input-group-input' %}
+          {% if form.password.errors %}
+              {% set password_class = password_class + ' is-invalid' %}
+          {% endif %}
+
+          {{ form.password(class_=password_class, placeholder='••••••••', id='login-password') }}
+
+          {% for error in form.password.errors %}
+              <span class="form-error-message">{{ error }}</span>
+          {% endfor %}
+      </div>
+
+      <button type="submit" class="btn-primary auth-submit-btn">Log In</button>
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a href="{{ url_for('auth.register') }}" class="auth-link">Register Here</a></p>
+        <!-- <a href="#" class="auth-link forgot-password">Forgot Password?</a> -->
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

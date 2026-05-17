@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ novel.title }} - {{ chapter.title }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reader.css') }}">
+{% endblock %}
+
+{% block content %}
+<div id="scrollProgress"></div>
+
+<div class="reader-container">
+    
+    <header class="reader-header">
+        <a href="{{ url_for('main.novel', novel_id=novel.id) }}" class="back-link">
+            &larr; Exit Reader
+        </a>
+        <p class="chapter-meta">Chapter {{ chapter.chapter_number }}</p>
+        <h1 class="chapter-title">{{ chapter.title }}</h1>
+    </header>
+
+    <article class="chapter-content">
+        {{ chapter.content | safe }}
+    </article>
+
+    <footer class="reader-navigation">
+        {% if prev_chapter_id %}
+            <a href="{{ url_for('main.read_chapter', novel_id=novel.id, chapter_id=prev_chapter_id) }}" class="nav-btn nav-prev">
+                &larr; Previous
+            </a>
+        {% else %}
+            <span class="nav-btn nav-prev disabled">Beginning of Story</span>
+        {% endif %}
+
+        {% if next_chapter_id %}
+            <a href="{{ url_for('main.read_chapter', novel_id=novel.id, chapter_id=next_chapter_id) }}" class="nav-btn nav-next">
+                Next Chapter &rarr;
+            </a>
+        {% else %}
+            <span class="nav-btn nav-next disabled">End reached</span>
+        {% endif %}
+    </footer>
+</div>
+
+<script>
+    // Handle Progress Bar
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("scrollProgress").style.width = scrolled + "%";
+    };
+
+    // Smooth entrance
+    document.addEventListener("DOMContentLoaded", () => {
+        window.scrollTo({top: 0, behavior: 'instant'});
+    });
+</script>
+{% endblock %}

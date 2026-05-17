@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - {{ novel.title }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/novel.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <section class="novel-hero-section">
+        <div class="novel-image-container">
+            {% if novel.cover_image %}
+                {% if novel.cover_image.startswith('http') %}
+                    <img src="{{ novel.cover_image }}" alt="{{ novel.title }} Cover" class="book-cover-graphic" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/default-cover.png') }}';">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/covers/' ~ novel.cover_image) }}" alt="{{ novel.title }} Cover" class="book-cover-graphic" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/default-cover.png') }}';">
+                {% endif %}
+            {% else %}
+                <img src="{{ url_for('static', filename='images/default-cover.png') }}" 
+                    alt="Default Cover" 
+                    class="book-cover-graphic">
+            {% endif %}
+        </div>
+        
+        <div class="novel-content">
+            <div class="tag-small">{{ novel.genre or 'Fiction' }}</div>
+            <h1 class="heading-primary">{{ novel.title }}</h1>
+            <p class="author-label">By <span class="text-highlight">{{ author.username if author else 'Unknown Author' }}</span></p>
+            
+            {% if novel.description %}
+            <p class="text-description hero-synopsis">
+                {{ novel.description }}
+            </p>
+            {% else %}
+            <p class="text-description hero-synopsis">
+                No description available for this novel yet.
+            </p>
+            {% endif %}
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value">{{ novel.status or 'Ongoing' }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Chapters</span>
+                    <span class="stat-value">{{ total_chapters }}</span>
+                </div>
+                {% if novel.created_date %}
+                <div class="stat-item">
+                    <span class="stat-label">Published</span>
+                    <span class="stat-value">{{ novel.created_date.strftime('%B %Y') }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <hr class="divider-line">
+            {% if session.username %}
+            <div class="button-group">
+                {% if start_reading_chapter_id %}
+                    <a href="{{ url_for('main.read_chapter', novel_id=novel.id, chapter_id=start_reading_chapter_id) }}" 
+                        class="btn-primary">
+                        
+                        {% if has_bookmark %} 
+                            Continue Reading
+                        {% else %}
+                            Start Reading Now
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <button class="btn-primary" disabled>No Chapters Available</button>
+                {% endif %}
+                    <button id="library-btn" 
+                            class="btn-secondary {% if has_bookmark %}active-bookmark{% endif %}" 
+                            onclick="addToLibrary({{ novel.id }})">
+                        <span id="library-text">
+                            {% if has_bookmark %}🔖 In Library{% else %}📑 Add to Library{% endif %}
+                        </span>
+                    </button>
+            </div>
+            {% else %}
+            <div class="button-group"></div>
+                <a href="{{ url_for('auth.login') }}" class="btn-primary" style="margin-top: 10px; display: inline-block;">Go to Login</a>  
+                <p style="font-size: 1.1em; font-weight: 600;">⚠️ Please Log In to Read and Add to Library</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="novel-secondary-content">
+        <div class="content-panel chapter-panel">
+            <h2 class="heading-secondary">Chapter List ({{ total_chapters }} chapters)</h2>
+            
+            {% if session.username %}
+                
+                {% if chapters %}
+                <div id="chapter-list-wrapper">
+                    <ul class="chapter-list full-list" id="chapter-list-ul">
+                        {% for chapter in chapters %}
+                        <li>
+                            <a href="{{ url_for('main.read_chapter', novel_id=novel.id, chapter_id=chapter.id) }}">
+                                <span class="chapter-number-full">Chapter {{ chapter.chapter_number }}</span>
+                                <span>{{ chapter.title }}</span>
+                                {% if chapter.published_date %}
+                                <span class="chapter-length">{{ chapter.published_date.strftime('%b %d, %Y') }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                {% if total_chapters > 20 %}
+                <div class="pagination-container">
+                    <a href="#" id="prev-page" class="page-link disabled" data-page="0">&larr; Previous</a>
+                    <span class="page-number-current" id="current-page-info">Page 1 of {{ (total_chapters / 20) | round(0, 'ceil') | int }}</span>
+                    <a href="#" id="next-page" class="page-link" data-page="2">Next &rarr;</a>
+                </div>
+                
+                <script>
+                    // Simple pagination for chapters
+                    const itemsPerPage = 20;
+                    const chapters = document.querySelectorAll('#chapter-list-ul li');
+                    const totalPages = Math.ceil(chapters.length / itemsPerPage);
+                    let currentPage = 1;
+
+                    function showPage(page) {
+                        chapters.forEach((chapter, index) => {
+                            const startIndex = (page - 1) * itemsPerPage;
+                            const endIndex = startIndex + itemsPerPage;
+                            chapter.style.display = (index >= startIndex && index < endIndex) ? 'block' : 'none';
+                        });
+
+                        document.getElementById('current-page-info').textContent = `Page ${page} of ${totalPages}`;
+                        
+                        const prevBtn = document.getElementById('prev-page');
+                        const nextBtn = document.getElementById('next-page');
+                        
+                        if (page === 1) {
+                            prevBtn.classList.add('disabled');
+                        } else {
+                            prevBtn.classList.remove('disabled');
+                        }
+                        
+                        if (page === totalPages) {
+                            nextBtn.classList.add('disabled');
+                        } else {
+                            nextBtn.classList.remove('disabled');
+                        }
+                        
+                        currentPage = page;
+                    }
+
+                    document.getElementById('prev-page').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) showPage(currentPage - 1);
+                    });
+
+                    document.getElementById('next-page').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) showPage(currentPage + 1);
+                    });
+
+                    // Initialize
+                    showPage(1);
+                </script>
+                {% endif %}
+                
+                {% else %}
+                <div style="text-align: center; padding: 50px; color: #777;">
+                    <p>No chapters have been published yet. Check back soon!</p>
+                </div>
+                {% endif %}
+
+            {% else %} 
+            <div style="text-align: center; padding: 50px; color: #cc3333; border: 1px dashed #cc3333; border-radius: 8px;">
+                <p style="font-size: 1.1em; font-weight: 600;">⚠️ Must Login To View Chapter List</p>
+                <p>Please log in or register to view the complete list of chapters and begin reading this novel.</p>
+                <a href="{{ url_for('auth.login') }}" class="btn-primary" style="margin-top: 15px; display: inline-block;">Go to Login</a>
+            </div>
+            {% endif %}
+            
+        </div>
+
+        <div class="content-panel review-panel">
+            <h2 class="heading-secondary">Reader Reviews</h2>
+            <div style="text-align: center; padding: 50px; color: #777;">
+                <p>Reviews feature coming soon!</p>
+            </div>
+        </div>
+    </section>
+
+<script>
+    async function addToLibrary(novelId) {
+        const btn = document.getElementById('library-btn');
+        const text = document.getElementById('library-text');
+
+        try {
+            const response = await fetch(`/api/library/toggle/${novelId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 401) {
+                window.location.href = "{{ url_for('auth.login') }}";
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.status === 'added') {
+                btn.classList.add('active-bookmark');
+                text.innerText = '🔖 In Library';
+            } else if (data.status === 'removed') {
+                btn.classList.remove('active-bookmark');
+                text.innerText = '📑 Add to Library';
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    </script>
+{% endblock %}

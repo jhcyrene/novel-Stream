@@ -1,0 +1,110 @@
+/* --- Global CSS Variables for Theming --- */
+:root {
+    /* Main Branding Color (Deep Indigo - used for header background, links) */
+    --primary-color: #4B0082; 
+    
+    /* Used for text on light backgrounds (assumed from previous context) */
+    --text-color: #333333; 
+    
+    /* Used for background elements */
+    --background-color: #f7f7f7; 
+    
+    /* Used for link borders/highlights on hover */
+    --secondary-color: #d1c4e9; 
+    
+    /* White text color for header */
+    --header-color: white; 
+}
+
+/* --- Admin Header Styling --- */
+.admin-header {
+    background-color: var(--primary-color); /* Deep Indigo background */
+    color: var(--header-color); /* White */
+    padding: 15px 30px;
+    
+    /* CORE FLEXBOX FOR HEADER LAYOUT */
+    display: flex;
+    justify-content: space-between; /* Pushes logo left, nav right */
+    align-items: center;
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Branding/Logo --- */
+.admin-logo-link {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--header-color); /* White */
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.logo-prefix {
+    font-weight: 400;
+    font-size: 1.3rem;
+    opacity: 0.8;
+}
+
+/* --- Navigation List --- */
+/* The main container for the navigation links (the <ul>) */
+.admin-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    /* CORE FLEXBOX FOR NAVIGATION ITEMS */
+    display: flex;
+    gap: 25px; 
+}
+
+.admin-nav-link {
+    color: rgba(255, 255, 255, 0.85); /* Slightly muted white */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 5px 0;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.admin-nav-link:hover {
+    color: var(--header-color); /* White */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Active Page State */
+.admin-nav-link.active {
+    color: var(--header-color); /* White */
+    font-weight: 700;
+    border-bottom: 2px solid var(--header-color); /* White */
+}
+
+/* Logout Button Specific Style */
+.logout-btn {
+    color: #ff9999; 
+}
+
+.logout-btn:hover {
+    color: #ffcccc;
+    border-bottom-color: #ffcccc;
+}
+
+/* --- Mobile Adaptation --- */
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        padding: 15px 20px;
+        text-align: center;
+    }
+    
+    /* FIXED: Target the admin-nav container for correct spacing */
+    .admin-nav { 
+        margin-top: 10px;
+    }
+
+    .admin-nav-list {
+        flex-wrap: wrap; 
+        justify-content: center;
+        gap: 15px;
+    }
+}

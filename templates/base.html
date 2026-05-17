@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NovelStream{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/kid-reading.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="navOverlay" class="nav-overlay"></div>
+
+    <header>
+        <div class="top-nav-bar">
+            <a href="{{ url_for('main.home') }}" class="logo">NovelStream</a>
+            
+            <nav class="main-links" id="mainNav">
+                <a href="{{ url_for('main.home') }}" class="{% if active_page == 'home' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('main.browse') }}" class="{% if active_page == 'browse' %}active{% endif %}">Browse</a>
+                {% if session.username %}
+                    <a href="{{ url_for('main.my_library') }}" class="{% if active_page == 'my_library' %}active{% endif %}">My Library</a>    
+                {% endif %}
+            </nav>
+            
+            <div class="nav-end">
+                <div class="search-profile">
+                    <span class="search-icon"></span>
+                    <input type="text" placeholder="Search..." class="search-input">
+                </div>
+                
+                {% if session.username %}
+                    <div class="profile-dropdown">
+                        <a href="javascript:void(0)" class="profile-icon" id="profileToggle">
+                            {% if session.profile_icon %}
+                                <img src="{{ url_for('static', filename='images/profile_icons/' + session.profile_icon) }}" alt="Profile Icon" class="profile-image">
+                            {% else %}
+                                👤
+                            {% endif %}
+                        </a>
+
+                        <div class="dropdown-menu" id="profileMenu">
+                            <div class="dropdown-header">User: <strong>{{ session.username }}</strong></div>
+                            {% if session.is_admin %}
+                                <a href="{{ url_for('admin.dashboard') }}" class="dropdown-item">🛠 Admin Dashboard</a>
+                            {% endif %}
+                            <a href="{{ url_for('main.profile') }}" class="dropdown-item">👤 Settings</a>
+                            <a href="{{ url_for('main.my_library') }}" class="dropdown-item">📚 My Library</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('auth.logout') }}" class="dropdown-item logout">⏏ Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="profile-icon">👤</a>
+                {% endif %}
+
+                <div class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages-container">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                        <button class="flash-close-btn" onclick="this.parentElement.style.display='none';">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        document.querySelectorAll('.search-input').forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.value.trim();
+                    if (searchTerm) {
+                        window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+                    }
+                }
+            });
+        });
+        
+        // Hamburger & Overlay Toggle
+        const hamburger = document.getElementById('hamburgerMenu');
+        const mainNav = document.getElementById('mainNav');
+        const navOverlay = document.getElementById('navOverlay');
+        
+        if (hamburger && navOverlay) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                mainNav.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = mainNav.classList.contains('active') ? 'hidden' : '';
+            });
+
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mainNav.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Profile Dropdown Toggle
+        const profileToggle = document.getElementById('profileToggle');
+        const profileMenu = document.getElementById('profileMenu');
+
+        if(profileToggle && profileMenu) {
+            profileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('active');
+            });
+            
+            // Prevent clicks inside the menu from closing it
+            profileMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Close dropdown when clicking anywhere else on the page
+            document.addEventListener('click', () => {
+                profileMenu.classList.remove('active');
+            });
+        }
+    </script>
+    <script>
+    // Auto-hide flash messages after 5 seconds
+    document.querySelectorAll('.flash-message').forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => message.remove(), 500);
+        }, 5000);
+    });
+</script>
+</body>
+</html>

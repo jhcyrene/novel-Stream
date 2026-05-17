@@ -1,0 +1,530 @@
+/* Color Fixes */
+.text-highlight,
+.tag-small { /* Replaces .small-tag */
+    color: var(--primary-color); /* Deep Indigo */
+}
+
+.heading-primary,
+.heading-secondary,
+.stat-number,
+.reviewer-name {
+    color: var(--text-color);
+}
+
+.text-description,
+.author-label,
+.stat-label,
+.chapter-length {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.divider-line {
+    border: none;
+    height: 1px;
+    background-color: var(--line); /* Custom line color */
+    margin: 30px 0;
+}
+
+/* --- Buttons (Updated with Variables) --- */
+.button-group {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color); /* Deep Indigo */
+    color: var(--header-color); /* White text */
+    /* Adjust box shadow to match new primary color */
+    box-shadow: 0 4px 10px rgba(75, 0, 130, 0.4); 
+}
+
+.btn-primary:hover {
+    background-color: #3d0069; /* Slightly darker indigo */
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--secondary-color); /* Use secondary color for border */
+}
+
+.btn-secondary:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+}
+
+
+/* --- Novel Hero Section (Main Layout) --- */
+.novel-hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 60px clamp(20px, 5vw, 40px);
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 60px;
+}
+
+.novel-content {
+    flex: 2;
+    max-width: 700px;
+}
+
+/* Stats are already using variable colors via general text rules */
+
+/* Right Image Container (Cover) */
+.novel-image-container {
+    flex: 1;
+    max-width: 350px;
+    display: flex; 
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.book-cover-graphic {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    border-radius: 8px;
+    /* --- MODIFIED: Stronger, but softer shadow to lift the cover --- */
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3); 
+}
+
+/* --- Novel Secondary Content --- */
+.novel-secondary-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px clamp(20px, 5vw, 40px) 80px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+}
+
+.content-panel {
+    padding-bottom: 20px;
+}
+
+/* Chapters List Styling */
+.chapter-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+}
+
+.chapter-list li {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.chapter-list li:last-child {
+    border-bottom: none;
+}
+
+.chapter-list a {
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-between;
+    transition: color 0.2s ease;
+}
+
+.chapter-list li:hover {
+    background-color: var(--background-color); /* Light gray background on hover */
+}
+
+.chapter-list li:hover a {
+    color: var(--primary-color); /* Deep Indigo on link hover */
+}
+
+/* Reviews Styling */
+.review-card {
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.review-stars {
+    color: gold; 
+    font-size: 18px;
+}
+
+/* --- Chapter List Redesign for Full View --- */
+
+.chapter-panel {
+    flex-grow: 2; 
+}
+
+#chapter-list-wrapper {
+    max-height: 500px; /* Adjust height as needed */
+    overflow-y: auto;
+    padding-right: 15px; /* Space for the scrollbar */
+    margin-bottom: 20px;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07); 
+}
+
+.chapter-list.full-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chapter-list.full-list li {
+    border-bottom: 1px solid #eee;
+}
+
+.chapter-list.full-list li:last-child {
+    border-bottom: none;
+}
+
+.chapter-list.full-list li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 15px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s;
+    font-size: 1rem;
+}
+
+.chapter-list.full-list li a:hover {
+    background-color: #f7f7f7;
+    color: var(--primary-color);
+}
+
+.chapter-number-full {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 15px;
+    white-space: nowrap; /* Prevent chapter number from wrapping */
+    width: 150px; 
+}
+
+/* --- Pagination Styling --- */
+
+.pagination-container {
+    display: flex;
+    justify-content: center; /* Center the pagination controls */
+    align-items: center;
+    padding: 10px 0;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.page-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 8px 15px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.page-link:hover:not(.disabled) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.page-link.disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: not-allowed;
+}
+
+.page-number-current {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+}
+
+
+/* --- Media Queries (Unchanged) --- */
+@media (max-width: 1100px) {
+    .novel-secondary-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .novel-hero-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding-top: 40px;
+    }
+
+    .novel-content {
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .author-label {
+        margin-bottom: 15px;
+    }
+    
+    .stats-container, .button-group {
+        justify-content: center;
+    }
+
+    .novel-image-container {
+        max-width: 300px;
+        width: 100%;
+    }
+}
+
+/* Additional styles for novel.css - Add these to your existing file */
+
+/* Stats Container */
+.stats-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #777;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Chapter List Styles */
+.chapter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chapter-item {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.chapter-item:hover {
+    background-color: #f8f8f8;
+}
+
+.chapter-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.chapter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.chapter-number {
+    font-size: 14px;
+    color: #9932cc;
+    font-weight: 600;
+}
+
+.chapter-title {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.chapter-meta {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    font-size: 13px;
+    color: #777;
+}
+
+.word-count,
+.publish-date {
+    display: flex;
+    align-items: center;
+}
+
+/* Empty States */
+.empty-chapters {
+    text-align: center;
+    padding: 50px 20px;
+    color: #777;
+}
+
+.empty-chapters p {
+    font-size: 16px;
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.page-link {
+    padding: 10px 20px;
+    background-color: #9932cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.page-link:hover:not(:disabled) {
+    background-color: #7a28a8;
+}
+
+.page-link:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.page-number-current {
+    font-size: 15px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Button Styles */
+.btn-primary,
+.btn-secondary {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #9932cc;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #7a28a8;
+}
+
+.btn-primary:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #9932cc;
+    border: 2px solid #9932cc;
+}
+
+.btn-secondary:hover {
+    background-color: #9932cc;
+    color: white;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stats-container {
+        gap: 20px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .chapter-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 15px;
+    }
+
+    .chapter-meta {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .chapter-number {
+        font-size: 13px;
+    }
+
+    .chapter-title {
+        font-size: 15px;
+    }
+
+    .pagination-container {
+        gap: 10px;
+    }
+
+    .page-link {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+}

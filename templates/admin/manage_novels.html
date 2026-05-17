@@ -1,0 +1,51 @@
+{% extends "admin/navigation.html" %}
+
+{% block title %}Manage Novel - StoryStream{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+    {% endblock %}
+
+{% block content %}
+
+<div class="admin-container">
+    <h1 class="admin-heading">📚 Novel Management</h1>
+    <p class="admin-subtitle">View, edit, and manage all novels on the StoryStream platform.</p>
+
+    <div class="action-bar">
+        <div class="search-bar">
+            <form method="GET" action="{{ url_for('admin.manage_novels') }}" class="search-form">
+                <button type="submit" class="btn-secondary search-btn">Search</button>
+            </form>
+        </div>
+
+        <a href="{{ url_for('admin.add_novel') }}" class="btn-primary add-novel-btn">
+            + Add New Novel
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes admin-flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="data-table-wrapper">
+        <table class="admin-data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Status</th>
+                    <th>Date Added</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+</div> 
+{% endblock %}

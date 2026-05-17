@@ -1,0 +1,142 @@
+:root {
+    --reader-bg: #ffffff;
+    --reader-text: #2c3e50;
+    --reader-max-width: 820px;
+    --primary-color: #6366f1;
+    --accent-color: #4f46e5;
+    --border-color: #f1f5f9;
+    --header-height: 140px;
+}
+
+body {
+    background-color: #f8fafc; /* Softer gray background */
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll Progress Bar */
+#scrollProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    z-index: 2000;
+    transition: width 0.1s ease;
+}
+
+.reader-container {
+    max-width: var(--reader-max-width);
+    margin: 0 auto;
+    background-color: var(--reader-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(0,0,0,0.02); /* Very subtle elevation */
+}
+
+/* Clean Fixed Header */
+.reader-header {
+    position: sticky; /* Sticky is often cleaner than Fixed for reader containers */
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid var(--border-color);
+    padding: 30px 60px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.reader-header .back-link {
+    display: inline-block;
+    float: left;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.reader-header .back-link:hover {
+    color: var(--primary-color);
+}
+
+.chapter-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #1e293b;
+    margin: 10px 0 5px 0;
+    clear: both;
+}
+
+.chapter-meta {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Beautiful Typography for Content */
+.chapter-content {
+    color: var(--reader-text);
+    padding: 60px 50px;
+    font-family: 'Charter', 'Georgia', serif; /* Higher quality font stacks */
+    line-height: 1.9;
+    font-size: 1.10rem;
+    flex-grow: 1;
+}
+
+.chapter-content p {
+    margin-bottom: 2em;
+}
+
+/* Professional Navigation */
+.reader-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 80px;
+    background: #ffffff;
+}
+
+.nav-btn {
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-prev {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+.nav-prev:hover:not(.disabled) {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.nav-next {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.nav-next:hover:not(.disabled) {
+    transform: translateY(-2px);
+    background: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Mobile Polish */
+@media (max-width: 768px) {
+    .reader-header { padding: 20px; }
+    .chapter-content { padding: 40px 25px; font-size: 1.15rem; }
+    .reader-navigation { padding: 40px 20px; flex-direction: column; gap: 15px; }
+    .nav-btn { width: 100%; text-align: center; }
+}

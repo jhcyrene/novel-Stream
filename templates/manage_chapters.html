@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - Manage Chapters{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/author_studio.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+<div class="studio-container">
+    <a href="{{ url_for('main.author_dashboard') }}" class="back-to-dashboard">&larr; Back to Dashboard</a>
+
+    <div class="studio-header-row">
+        <h1 class="heading-primary">📖 Chapter Management: {{ novel.title }}</h1>
+        <div class="novel-danger-zone">
+            <button class="btn-danger-outline" onclick="confirmDeleteNovel({{ novel.id }}, '{{ novel.title | escape }}')">
+                🗑️ Delete Novel
+            </button>
+            <form id="delete-novel-form-{{ novel.id }}" method="POST" action="{{ url_for('main.delete_novel', novel_id=novel.id) }}" style="display:none;">
+                {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+            </form>
+        </div>
+    </div>
+
+    <p class="studio-description">
+        Total Chapters: <strong>{{ total_chapters }}</strong>. Use this page to draft, edit, and publish your chapters.
+    </p>
+
+    <div class="studio-actions">
+        <a href="{{ url_for('main.create_chapter', novel_id=novel.id) }}" class="btn-create-chapter">
+            + Create New Chapter
+        </a>
+    </div>
+
+    {% if chapters %}
+    <table class="chapter-management-table">
+        <thead>
+            <tr>
+                <th class="col-num">#</th>
+                <th class="col-title">Title</th>
+                <th class="col-status">Status</th>
+                <th class="col-date">Last Updated</th>
+                <th class="col-actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chapter in chapters %}
+            <tr>
+                <td>{{ chapter.chapter_number }}</td>
+                <td>{{ chapter.title }}</td>
+                <td>
+                    {% if chapter.is_published %}
+                        <span class="publish-status status-published">Published</span>
+                    {% else %}
+                        <span class="publish-status status-draft-chapter">Draft</span>
+                    {% endif %}
+                </td>
+                <td>{{ chapter.last_updated_date.strftime('%Y-%m-%d') if chapter.last_updated_date else 'N/A' }}</td>
+                <td class="action-links">
+                    <a href="{{ url_for('main.edit_chapter', novel_id=novel.id, chapter_id=chapter.id) }}" class="link-edit">Edit</a>
+                    <a href="javascript:void(0)" onclick="confirmDeleteChapter({{ chapter.id }}, '{{ chapter.title | escape }}')" class="link-delete">Delete</a>
+                    
+                    <form id="delete-form-{{ chapter.id }}" method="POST" action="{{ url_for('main.delete_chapter', novel_id=novel.id, chapter_id=chapter.id) }}" style="display:none;">
+                        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-dashboard">
+        <h3>No Chapters Yet</h3>
+        <p>Your readers are waiting! Click "Create New Chapter" to get started.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function confirmDeleteChapter(chapterId, chapterTitle) {
+        Swal.fire({
+                title: "Delete Chapter?",
+                html: `Are you sure you want to permanently delete:<br><b>"${chapterTitle}"</b>?<br><br><span style="color: #d33;">This action cannot be undone.</span>`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Yes, delete chapter",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(`delete-form-${chapterId}`);
+                    if (form) {
+                        form.submit();
+                    }
+                }
+            });
+    }
+
+    function confirmDeleteNovel(novelId, novelTitle) {
+        Swal.fire({
+                title: "Delete Novel",
+                html: `Are you sure you want to delete <b>"${novelTitle}"</b>?<br><br>This will delete <b>ALL</b> chapters and cannot be recovered!`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete everything!",
+                cancelButtonText: "No, keep it"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delete-novel-form-${novelId}`).submit();
+                }
+            });
+    }
+</script>
+{% endblock %}

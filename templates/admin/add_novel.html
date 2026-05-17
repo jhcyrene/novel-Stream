@@ -1,0 +1,84 @@
+{% extends "admin/navigation.html" %}
+
+{% block title %}Admin - Add New Novel{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_forms.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="admin-heading">✨ Add New Novel</h1>
+    <p class="admin-subtitle">Enter the details for the new novel below.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes admin-flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="add-novel-form-container">
+        <form method="POST" action="{{ url_for('admin.add_novel') }}" class="novel-form" enctype="multipart/form-data">
+            
+            {{ form.hidden_tag() }} <div class="form-group">
+                {{ form.title.label(class_="form-label") }}
+                {{ form.title(class_="form-input", placeholder="e.g., The Ancient Secret of StoryStream") }}
+                {% for error in form.title.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.author.label(class_="form-label") }}
+                {{ form.author(class_="form-input", placeholder="e.g., J. M. Smith") }}
+                {% for error in form.author.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.genre.label(class_="form-label") }}
+                {{ form.genre(class_="form-input", placeholder="e.g., Fantasy, Sci-Fi") }}
+                {% for error in form.genre.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.status.label(class_="form-label") }}
+                {{ form.status(class_="form-select") }}
+                {% for error in form.status.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.description.label(class_="form-label") }}
+                {{ form.description(class_="form-textarea", rows="8", placeholder="Enter a brief summary of the novel...") }}
+                {% for error in form.description.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.cover_image.label(class_="form-label") }}
+                {{ form.cover_image(class_="form-file-input") }}
+                {% for error in form.cover_image.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+
+            <div class="form-action-buttons">
+                <button type="submit" class="btn-primary form-submit-btn">Publish Novel</button>
+                <a href="{{ url_for('admin.manage_novels') }}" class="btn-secondary form-cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

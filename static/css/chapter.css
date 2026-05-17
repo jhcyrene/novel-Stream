@@ -1,0 +1,306 @@
+/* Chapter Reading Page Styles */
+
+.chapter-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #777;
+}
+
+.breadcrumb a {
+    color: #9932cc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: #7a28a8;
+    text-decoration: underline;
+}
+
+.breadcrumb .separator {
+    color: #ddd;
+}
+
+.breadcrumb .current {
+    color: #333;
+    font-weight: 500;
+}
+
+/* Chapter Header */
+.chapter-header {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #eee;
+}
+
+.novel-info-mini {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.mini-cover {
+    width: 60px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.novel-title-mini {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.author-mini {
+    font-size: 14px;
+    color: #777;
+    margin: 5px 0 0 0;
+}
+
+.chapter-info {
+    text-align: center;
+}
+
+.chapter-number {
+    display: inline-block;
+    font-size: 14px;
+    color: #9932cc;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.chapter-title {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 15px 0;
+    line-height: 1.3;
+}
+
+.chapter-meta {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+}
+
+/* Chapter Navigation */
+.chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: white;
+    color: #9932cc;
+    border: 2px solid #9932cc;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-btn:hover:not(.disabled) {
+    background-color: #9932cc;
+    color: white;
+}
+
+.nav-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.nav-arrow {
+    font-size: 18px;
+}
+
+.chapters-btn {
+    flex: 1;
+    justify-content: center;
+    max-width: 200px;
+}
+
+/* Chapter Content */
+.chapter-content {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin: 40px 0;
+    padding: 30px;
+    background-color: #fafafa;
+    border-radius: 10px;
+}
+
+.chapter-content p {
+    margin-bottom: 1.5em;
+    text-align: justify;
+}
+
+.chapter-content p:first-child::first-letter {
+    font-size: 3em;
+    line-height: 0.9;
+    float: left;
+    margin: 0.1em 0.1em 0 0;
+    color: #9932cc;
+    font-weight: bold;
+}
+
+.no-content {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 60px 20px;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 2px solid #eee;
+}
+
+.comments-section h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4b0082;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chapter-container {
+        padding: 20px 15px;
+    }
+
+    .chapter-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
+
+    .chapter-info {
+        text-align: left;
+    }
+
+    .chapter-meta {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .chapter-navigation {
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .chapters-btn {
+        flex-basis: 100%;
+        max-width: none;
+        order: -1;
+    }
+
+    .chapter-content {
+        font-size: 16px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .breadcrumb {
+        font-size: 12px;
+        flex-wrap: wrap;
+    }
+
+    .novel-info-mini {
+        gap: 12px;
+    }
+
+    .mini-cover {
+        width: 50px;
+        height: 70px;
+    }
+
+    .novel-title-mini {
+        font-size: 16px;
+    }
+
+    .author-mini {
+        font-size: 13px;
+    }
+
+    .chapter-title {
+        font-size: 22px;
+    }
+
+    .nav-btn .nav-text {
+        display: none;
+    }
+
+    .nav-btn .nav-arrow {
+        font-size: 20px;
+    }
+
+    .chapters-btn .nav-text {
+        display: block;
+    }
+
+    .chapter-content {
+        font-size: 15px;
+        line-height: 1.7;
+        padding: 15px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .breadcrumb,
+    .novel-info-mini,
+    .chapter-navigation,
+    .comments-section {
+        display: none;
+    }
+
+    .chapter-content {
+        background-color: white;
+        padding: 0;
+    }
+}

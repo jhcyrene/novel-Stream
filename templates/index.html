@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block title %}StoryStream - Home{% endblock %}
+
+
+{% block content %}
+    
+    <div class="hero-section">
+        <div class="hero-content">
+            <p class="small-tag">✨ Unlimited stories await</p>
+            <h1>Your Gateway to <span class="highlight">Endless Stories</span></h1>
+            <p class="description-text">
+                Dive into a world of captivating novels. Read, discover, 
+                and get lost in stories from every genre imaginable.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.login') }}" class="btn-primary">Start Reading Free →</a>
+                <a href="{{ url_for('main.browse') }}" class="btn-secondary">Browse Library</a>
+            </div>
+
+            <div class="stats-bar">
+                <div><span class="stat-number">{{ data.published_novels }}+</span><span class="stat-label">Novels</span></div>
+                <div><span class="stat-number">{{ data.total_users }}+</span><span class="stat-label">Readers</span></div>
+                <div><span class="stat-number">{{ data.total_genres }}+</span><span class="stat-label">Genres</span></div>
+            </div>
+        </div>
+        
+        <div class="hero-image-container">
+            <img 
+                src="{{ url_for('static', filename='images/kid-reading.png') }}" 
+                alt="A child reading a book, floating on a cloud" 
+                class="hero-graphic"
+            >
+        </div>
+
+    </div>
+
+{% endblock %}

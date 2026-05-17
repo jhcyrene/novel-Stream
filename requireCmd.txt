@@ -1,0 +1,7 @@
+python.exe -m pip install --upgrade pip
+
+pip install flask
+pip install flask-sqlalchemy
+pip install wtforms
+pip install flask-wtf
+pip install flask-login email-validator

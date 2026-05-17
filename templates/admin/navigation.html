@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StoryStream Admin{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-header.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    
+    
+    {% block head %}
+    {% endblock %} 
+</head>
+<body>
+    <header class="admin-header">
+    <div class="header-branding">
+        <a href="{{ url_for('admin.dashboard') }}" class="admin-logo-link">
+            <span class="logo-prefix">StoryStream</span> Admin Console
+        </a>
+    </div>
+
+    <nav class="admin-nav">
+        <ul class="admin-nav-list">
+            <li>
+                <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link {% if active_page == 'dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin.manage_novels') }}" class="admin-nav-link {% if active_page == 'novels' %}active{% endif %}">
+                    Novels
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin.manage_users') }}" class="admin-nav-link {% if active_page == 'users' %}active{% endif %}">
+                    Users
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.logout') }}" class="admin-nav-link logout-btn">
+                    Logout ({{ session.get('username', 'Admin') }})
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+    <main>
+        {% block content %}
+            {% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

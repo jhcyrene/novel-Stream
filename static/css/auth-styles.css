@@ -1,0 +1,172 @@
+.center-wrapper {
+    /* Ensures the wrapper takes up the entire viewport */
+    min-height: 90vh;
+    width: 100%;
+    
+    /* Centering logic applied to the wrapper */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column;
+}
+
+/* --- Authentication Container --- */
+.auth-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px; /* Focus the form */
+    text-align: center;
+    align-items: center;
+}
+
+
+/* Consistent Title Styling (similar to hero h1) */
+.auth-title {
+    align-items: center;
+    font-size: 30px;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Consistent Subtitle Styling (similar to description-text) */
+.auth-subtitle {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+/* --- Form Styling --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #9932cc;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(153, 50, 204, 0.2);
+}
+
+
+/* --- Button Styling (Copied from Hero CSS) --- */
+
+.btn-primary {
+    /* Using a specific class for form submit buttons */
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    
+    /* Primary Colors from the original CSS */
+    background-color: #9932cc;
+    color: white;
+    box-shadow: 0 4px 10px rgba(153, 50, 204, 0.4);
+    margin-top: 10px; /* Space above button */
+    width: 100%; /* Make it full width for form */
+}
+
+.btn-primary:hover {
+    background-color: #7a28a8;
+    transform: translateY(-2px);
+}
+
+/* --- Footer and Links --- */
+.auth-footer {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #777;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.auth-link {
+    color: #9932cc; /* Highlight color from hero section */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #7a28a8;
+    text-decoration: underline;
+}
+
+/* --- Flashed Messages Styling (Login/Register Errors & Success) --- */
+/* .form-error-message {
+    margin: 15px 0 20px 0; 
+    padding: 0;
+    width: 100%;
+    align-items: center;
+} */
+
+/* 2. Wrapper for all Flash Messages */
+.flashes {
+    list-style: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    border-radius: 8px; /* Consistent corner rounding */
+    overflow: hidden; /* Ensures borders/backgrounds look clean */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 3. Common Style for Individual Message Items */
+.flashes li {
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Separator if multiple messages appear */
+}
+
+/* Remove bottom border on the last item */
+.flashes li:last-child {
+    border-bottom: none;
+}
+
+/* Success Messages (e.g., successful login) */
+.flashes li.success {
+    /* Using your primary color for success feedback */
+    background-color: var(--secondary-color); /* Medium Purple/Violet for a softer background */
+    color: var(--primary-color); /* Deep Indigo text for strong contrast */
+    border-left: 5px solid var(--primary-color);
+}
+
+/* Error Messages (e.g., invalid login, validation failure) */
+.flashes li.error {
+    /* Using a standard red for clear error signaling */
+    --error-color: #d32f2f; 
+    background-color: #ffebee; /* Very light red background */
+    color: var(--error-color); /* Dark red text */
+    border-left: 5px solid var(--error-color);
+}

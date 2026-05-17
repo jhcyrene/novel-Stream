@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/library.css') }}">
+{% endblock %}
+
+{% block title %}Search Results - StoryStream{% endblock %}
+
+{% block content %}
+<div class="library-container">
+    <div class="library-header">
+        <a href="" class="back-to-dashboard" style="margin-bottom: 20px; display: inline-block;">
+            ← Back to Browse
+        </a>
+        <h1>Results for "{{ query }}"</h1>
+        <p class="novel-count">{{ novels|length }} novels found</p>
+    </div>
+
+    <div id="novelGrid" class="novel-grid">
+        {% if novels %}
+            {% for novel in novels %}
+            <a href="{{ url_for('main.novel', novel_id=novel.id) }}" class="novel-card-link" data-status="{{ novel.status }}">
+                <div class="novel-card">
+                    <div class="novel-cover">
+                        {% if novel.cover_image %}
+                            {% if novel.cover_image.startswith('http') %}
+                                <img src="{{ novel.cover_image }}" alt="{{ novel.title }}">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/covers/' ~ novel.cover_image) }}" alt="{{ novel.title }}">
+                            {% endif %}
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-cover.png') }}" alt="Default Cover">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="novel-info">
+                        <h3 class="novel-title">{{ novel.title }}</h3>
+                        <p class="novel-author">By: {{ novel.author }}</p>
+                        
+                        <div class="novel-status">
+                            <span class="status-tag {{ novel.status }}">
+                                {{ novel.status.replace('-', ' ') | capitalize if novel.status else 'Unknown' }}
+                            </span>
+                        </div>
+                        <span class="btn-read-now">Read Now →</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="empty-library" style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;">
+                <div style="font-size: 50px; margin-bottom: 20px;">🔍❌</div>
+                <h3>No matches for "{{ query }}"</h3>
+                <p>Try checking your spelling or using more general keywords.</p>
+                <div style="margin-top: 30px;">
+                    <a href="{{ url_for('main.browse') }}" class="btn-browse">Browse All Novels</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="paginationWrapper" class="pagination-container"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const itemsPerPage = 12;
+        const grid = document.getElementById('novelGrid');
+        const allCards = Array.from(grid.getElementsByClassName('novel-card-link'));
+        const paginationWrapper = document.getElementById('paginationWrapper');
+
+        if (allCards.length === 0) return;
+
+        function displayPage(page) {
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            allCards.forEach((card, index) => {
+                card.style.display = (index >= start && index < end) ? 'block' : 'none';
+            });
+
+            setupPagination(page);
+        }
+
+        function setupPagination(current) {
+            paginationWrapper.innerHTML = "";
+            const pageCount = Math.ceil(allCards.length / itemsPerPage);
+            if (pageCount <= 1) return;
+
+            for (let i = 1; i <= pageCount; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i;
+                btn.className = `page-btn ${i === current ? 'active' : ''}`;
+                btn.onclick = () => {
+                    displayPage(i);
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                };
+                paginationWrapper.appendChild(btn);
+            }
+        }
+
+        displayPage(1);
+    });
+</script>
+{% endblock %}

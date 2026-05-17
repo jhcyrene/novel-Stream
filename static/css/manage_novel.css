@@ -1,0 +1,137 @@
+/* --- Container & Headers --- */
+.studio-container { 
+    max-width: 1000px; 
+    margin: 40px auto; 
+    padding: 20px; 
+}
+
+.studio-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.studio-description {
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+/* --- Action Buttons --- */
+.studio-actions {
+    margin-bottom: 20px;
+}
+
+.btn-create-chapter {
+    background: #9932cc;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: background 0.2s;
+}
+
+.btn-create-chapter:hover {
+    background: #802bbd;
+}
+
+.btn-danger-outline {
+    background: transparent;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-danger-outline:hover {
+    background: #ff4d4f;
+    color: white;
+}
+
+/* --- Table Styling --- */
+.chapter-management-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.chapter-management-table th, 
+.chapter-management-table td {
+    padding: 18px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.chapter-management-table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #4b0082;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+/* Column Widths */
+.col-num { width: 8%; }
+.col-title { width: 42%; }
+.col-status { width: 15%; }
+.col-date { width: 15%; }
+.col-actions { width: 20%; }
+
+.chapter-management-table tr:hover { 
+    background-color: #f8fafc; 
+}
+
+/* --- Status Badges --- */
+.publish-status { 
+    font-weight: 700; 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+}
+.status-published { background: #e0f2fe; color: #0369a1; }
+.status-draft-chapter { background: #fef3c7; color: #92400e; }
+
+/* --- Table Action Links --- */
+.action-links a {
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.link-edit { color: #2563eb; }
+.link-delete { color: #dc2626; }
+
+.link-edit:hover { text-decoration: underline; }
+.link-delete:hover { color: #991b1b; }
+
+/* --- Navigation & Empty States --- */
+.back-to-dashboard {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+.back-to-dashboard:hover { color: #4b0082; }
+
+.empty-dashboard {
+    text-align: center;
+    padding: 60px 20px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    margin-top: 20px;
+    color: #64748b;
+}

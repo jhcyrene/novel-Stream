@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - Author Studio{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/author_studio.css') }}">
+    <style>
+        /* Define specific styles for the dashboard table */
+        .novel-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; /* Space between rows */
+            margin-top: 20px;
+        }
+
+        .novel-table thead th {
+            text-align: left;
+            padding: 10px 15px;
+            color: var(--light-text);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .novel-table tbody tr {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.2s;
+        }
+
+        .novel-table tbody tr:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .novel-table td {
+            padding: 15px;
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .novel-title-cell a {
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .novel-title-cell a:hover {
+            color: var(--primary-color);
+        }
+        
+        .status-tag-dashboard {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-ongoing { background-color: #e6f7ff; color: #1890ff; }
+        .status-completed { background-color: #f6ffed; color: #52c41a; }
+        .status-draft { background-color: #fffbe6; color: #faad14; }
+
+        .action-links a {
+            margin-right: 15px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+
+        .empty-dashboard {
+            text-align: center;
+            padding: 50px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .empty-dashboard h3 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="studio-container">
+    <div class="studio-header">
+        <h1 class="heading-primary">✒️ Your Author Studio</h1>
+        <p class="studio-description">Manage your published and draft novels here. Total Novels: <strong>{{ total_novels }}</strong></p>
+    </div>
+
+    <div class="studio-actions">
+        <a href="{{ url_for('main.create_novel') }}" class="btn-primary studio-btn">
+            + Create New Novel
+        </a>
+    </div>
+    
+    {% if novels %}
+    <table class="novel-table">
+        <thead>
+            <tr>
+                <th style="width: 40%;">Novel Title</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 10%;">Chapters</th>
+                <th style="width: 15%;">Created Date</th>
+                <th style="width: 20%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for novel in novels %}
+            <tr>
+                <td class="novel-title-cell">
+                    <a href="{{ url_for('main.novel', novel_id=novel.id) }}">{{ novel.title }}</a>
+                </td>
+                <td>
+                    {% set status_class = 'status-' ~ novel.status %}
+                    <span class="status-tag-dashboard {{ status_class }}">
+                        {{ novel.status.replace('-', ' ') | capitalize }}
+                    </span>
+                </td>
+                <td>{{ novel.chapters }}</td>
+                <td>{{ novel.created_date }}</td>
+                <td class="action-links">
+                    <a href="{{ url_for('main.edit_novel', novel_id=novel.id) }}">Edit Info</a>
+                    <a href="{{ url_for('main.manage_chapters', novel_id=novel.id) }}">Chapters</a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-dashboard">
+        <h3>Welcome to the Studio!</h3>
+        <p>You haven't created any novels yet. Click the button above to start writing your masterpiece.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

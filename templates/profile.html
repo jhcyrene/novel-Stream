@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - {{ user.username }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <aside class="profile-sidebar">
+        <div class="user-info">
+            <div class="avatar-display">
+                {% if user.avatar_url and user.avatar_url != 'default.jpg' %}
+                    <img src="{{ url_for('static', filename='images/profile_icons/' + user.avatar_url) }}" alt="{{ user.username }}'s Avatar" class="profile-main-avatar">
+                {% else %}
+                    <span class="profile-main-avatar default-icon">👤</span>
+                {% endif %}
+            </div>
+            
+            <h2>{{ user.username }}</h2>
+            <p class="member-since">Member since: {{ user.time_created.strftime('%b %d, %Y') }}</p>
+        </div>
+
+        <nav class="profile-nav">
+            <a href="{{ url_for('main.profile') }}" class="nav-item active">📝 My Novels ({{ novels|length }})</a>
+            <a href="#" class="nav-item">⚙️ Account Settings</a>
+            <a href="{{ url_for('main.author_dashboard') }}" class="nav-item">🖋️ Author Studio</a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-link">⏏ Logout</a>
+        </nav>
+    </aside>
+
+ <main class="profile-content">
+    <header class="content-header">
+        <h3>My Published Novels</h3>
+        <a href="{{ url_for('main.create_novel') }}" class="btn-primary create-novel-btn">+ New Novel</a>
+    </header>
+
+    {% if novels %}
+        <div class="novel-list" id="novel-list">
+            {% for novel in novels %}
+                <div class="novel-card novel-item">
+                    <div class="novel-cover" style="background-image: url('{{ url_for('static', filename='images/covers/' + (novel.cover_image if novel.cover_image else 'default_cover.jpg')) }}');">
+                    </div>
+                    <div class="novel-details">
+                        <div class="details-top">
+                            <h4>{{ novel.title }}</h4>
+                            <span class="status status-{{ novel.status|lower }}">{{ novel.status }}</span>
+                        </div>
+                        <p class="chapters-count">📚 {{ novel.chapters.count() }} Chapters</p>
+                        
+                        <div class="novel-actions">
+                            <a href="{{ url_for('main.novel', novel_id=novel.id) }}" class="btn-view">View</a>
+                            <a href="{{ url_for('main.manage_chapters', novel_id=novel.id) }}" class="btn-edit">Chapters</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="pagination-controls" class="pagination-container">
+            <button id="prev-page" class="btn-page">Previous</button>
+            <span id="page-info">Page 1 of X</span>
+            <button id="next-page" class="btn-page">Next</button>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>You haven't published any novels yet.</p>
+            <a href="{{ url_for('main.create_novel') }}" class="btn-primary">Start Your First Novel</a>
+        </div>
+    {% endif %}
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsPerPage = 10;
+    const novelList = document.getElementById('novel-list');
+    const items = novelList.getElementsByClassName('novel-item');
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+    let currentPage = 1;
+
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const pageInfo = document.getElementById('page-info');
+
+    function showPage(page) {
+        // Hide all items
+        for (let i = 0; i < items.length; i++) {
+            items[i].style.display = 'none';
+        }
+
+        // Show items for current page
+        let start = (page - 1) * itemsPerPage;
+        let end = start + itemsPerPage;
+        
+        for (let i = start; i < end && i < items.length; i++) {
+            items[i].style.display = 'flex'; // Use flex to match card layout
+        }
+
+        // Update UI
+        pageInfo.innerText = `Page ${page} of ${totalPages}`;
+        prevBtn.disabled = (page === 1);
+        nextBtn.disabled = (page === totalPages);
+
+        // Hide controls if only 1 page
+        if (totalPages <= 1) {
+            document.getElementById('pagination-controls').style.display = 'none';
+        }
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+            window.scrollTo(0, 0); // Scroll to top of list
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+            window.scrollTo(0, 0);
+        }
+    });
+
+    // Initialize
+    if (items.length > 0) {
+        showPage(currentPage);
+    }
+});
+</script>
+{% endblock %}

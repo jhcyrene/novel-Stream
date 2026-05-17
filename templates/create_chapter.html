@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - {{ "Edit Chapter" if is_editing else "Create Chapter" }}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/author_studio.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+  <style>
+    .chapter-form { max-width: 900px; margin: 0 auto; }
+
+    #quill-editor-container {
+      height: 500px; /* Adjust height as needed */
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+  </style>
+  
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="studio-container">
+  <a href="{{ url_for('main.manage_chapters', novel_id=novel.id) }}" class="back-to-dashboard">&larr; Back to Chapter List</a>
+
+  <h1 class="heading-primary">
+    {{ "🖋️ Edit Chapter" if is_editing else "✨ New Chapter" }} for <span class="text-primary">{{ novel.title }}</span>
+  </h1>
+  <p class="studio-description">
+    {{ "Update the content and publishing status for this chapter." if is_editing else "Start writing your next chapter!" }}
+  </p>
+
+        <form method="POST" class="chapter-form" id="chapter-form" novalidate
+        {% if is_editing %}
+        action="{{ url_for('main.edit_chapter', novel_id=novel.id, chapter_id=chapter.id) }}"
+        {% else %}
+        action="{{ url_for('main.create_chapter', novel_id=novel.id) }}"
+        {% endif %}
+        >
+    {{ form.hidden_tag() }}
+
+    <div class="meta-row">
+      <div class="form-group">
+        {{ form.chapter_number.label(class="form-label") }}
+        {{ form.chapter_number(class="form-input", type="number") }}
+        {% for error in form.chapter_number.errors %}
+          <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-input", placeholder="e.g., Chapter 1: The Whispering Woods") }}
+        {% for error in form.title.errors %}
+          <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="form-group">
+      {{ form.content.label(class="form-label") }}
+      <div id="quill-editor-container">
+        {{ form.content.data | safe if form.content.data }}
+      </div>
+      
+      {{ form.content(class="form-textarea", style="display:none;", id="content") }}
+      {% for error in form.content.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
+    
+    <div class="status-checkbox form-group">
+      {{ form.is_published(class="form-checkbox") }}
+      {{ form.is_published.label(class="form-label") }}
+    </div>
+    
+    <div class="form-actions">
+      <a href="{{ url_for('main.manage_chapters', novel_id=novel.id) }}" class="btn-secondary studio-btn cancel-btn">Cancel</a>
+      
+      {{ form.submit(class="btn-primary studio-btn", value=("Update Chapter" if is_editing else "Save Chapter")) }}
+    </div>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+    
+  var quill = new Quill('#quill-editor-container', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'], 
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
+      ]
+    }
+  });
+
+  var form = document.getElementById('chapter-form');
+  var contentField = document.getElementById('content');
+  
+  form.onsubmit = function() {
+    console.log("Submit button clicked! Processing Quill content..."); // DEBUG LINE
+    var htmlContent = quill.root.innerHTML;
+
+    var isEmpty = quill.getText().trim().length === 0;
+
+    if (isEmpty) {
+      contentField.value = '';
+    } else {
+      contentField.value = htmlContent;
+    }
+
+    if (contentField.value === '') {
+      alert('Chapter content cannot be empty.');
+      return false;
+    }
+
+    return true;
+  };
+</script>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}StoryStream - My Library{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/library.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="library-container">
+    <div class="library-header">
+        <h1 class="heading-primary">My Reading Library</h1>
+        <p class="text-description">All the stories you've saved to read later.</p>
+    </div>
+
+    <div class="novel-grid" id="novelGrid">
+        {% if novels %}
+            {% for novel in novels %}
+            <a href="{{ url_for('main.novel', novel_id=novel.id) }}" class="novel-card-link">
+                <div class="novel-card">
+                    <div class="novel-cover">
+                        {% if novel.cover_image %}
+                            <img src="{{ url_for('static', filename='images/covers/' ~ novel.cover_image) }}" alt="{{ novel.title }}">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/kid-reading.png') }}" alt="Default Cover">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="novel-info">
+                        <h3 class="novel-title">{{ novel.title }}</h3>
+                        <p class="novel-author">by {{ novel.author.username if novel.author else 'Unknown' }}</p>
+                        
+                        <div class="novel-status">
+                            <span class="status-tag {{ novel.status|lower if novel.status else '' }}">{{ novel.status|capitalize if novel.status else 'Unknown' }}</span>
+                            <span class="status-tag genre">{{ novel.genre }}</span>
+                        </div>
+                        
+                        <span class="btn-read-now">Read Now →</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="empty-library">
+                <h3>Your library is empty</h3>
+                <p>Start browsing to find your next favorite story!</p>
+                <a href="{{ url_for('main.browse') }}" class="btn-browse">Browse Novels</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="paginationWrapper" class="pagination-container"></div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsPerPage = 12; // Change this to 50 if you want fewer pages
+    let currentPage = 1;
+    
+    const grid = document.getElementById('novelGrid');
+    const cards = Array.from(grid.getElementsByClassName('novel-card-link'));
+    const paginationWrapper = document.getElementById('paginationWrapper');
+
+    function updateDisplay(page) {
+        currentPage = page;
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        // Hide all, then show the slice
+        cards.forEach((card, index) => {
+            card.style.display = (index >= start && index < end) ? 'block' : 'none';
+        });
+
+        renderControls();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function renderControls() {
+        const pageCount = Math.ceil(cards.length / itemsPerPage);
+        if (pageCount <= 1) {
+            paginationWrapper.innerHTML = "";
+            return;
+        }
+
+        let html = `<div class="pagination-info">Showing page ${currentPage} of ${pageCount}</div>`;
+        html += `<nav class="pagination-nav">`;
+
+        for (let i = 1; i <= pageCount; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+
+        html += `</nav>`;
+        paginationWrapper.innerHTML = html;
+    }
+
+    // Global function for the buttons
+    window.goToPage = function(page) {
+        updateDisplay(page);
+    };
+
+    // Initialize
+    if (cards.length > 0) {
+        updateDisplay(1);
+    }
+});
+</script>
+{% endblock %}
