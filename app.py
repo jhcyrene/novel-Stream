@@ -10,6 +10,8 @@ from routes.auth import auth_bp
 from routes.main import main_bp
 from routes.admin import admin_bp
 
+app = Flask(__name__) # Must be named "app"
+
 def create_app():
     # ------ App Setup ------
     app = Flask(__name__)
